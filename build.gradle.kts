@@ -1,21 +1,8 @@
 plugins {
-    kotlin("jvm") version "2.2.0"
+    kotlin("jvm") version "2.2.0" apply false
 }
 
-group = "it.krzeminski"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(17)
+allprojects {
+    group = "it.krzeminski.ko2py"
+    version = "0.0.1-SNAPSHOT"
 }
