@@ -19,7 +19,7 @@ class Ko2pyPlugin : Plugin<Project> {
                 val outputDir = extension.outputDir ?: project.layout.buildDirectory.asFile.get().also { buildDir ->
                     extension.outputDir = buildDir
                 }
-                freeCompilerArgs.addAll("-P", "plugin:korduino:OUTPUT_DIR=$outputDir")
+                freeCompilerArgs.addAll("-P", "plugin:ko2py:outputDir=$outputDir")
             }
         }
     }
