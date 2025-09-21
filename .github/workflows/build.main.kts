@@ -8,6 +8,7 @@
 
 import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
+import io.github.typesafegithub.workflows.domain.RunnerType.MacOSLatest
 import io.github.typesafegithub.workflows.domain.RunnerType.UbuntuLatest
 import io.github.typesafegithub.workflows.domain.triggers.PullRequest
 import io.github.typesafegithub.workflows.domain.triggers.Push
@@ -21,9 +22,11 @@ workflow(
     ),
     sourceFile = __FILE__,
 ) {
-    job(id = "build", runsOn = UbuntuLatest) {
-        uses(action = Checkout())
-        uses(action = ActionsSetupGradle())
-        run(command = "./gradlew build",)
+    for (runner in listOf(UbuntuLatest, MacOSLatest)) {
+        job(id = "build-on-${runner::class.simpleName}", runsOn = runner) {
+            uses(action = Checkout())
+            uses(action = ActionsSetupGradle())
+            run(command = "./gradlew build",)
+        }
     }
 }
