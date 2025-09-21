@@ -10,7 +10,7 @@ fun getBuiltInTypesFile(moduleName: String): SourceFile {
     return SourceFile(
         name = "$moduleName/builtIns.kt",
         content = """
-            package generated.$moduleName
+            package model.${moduleName.lowercase()}
 
             $thisFileIsGeneratedComment
 
