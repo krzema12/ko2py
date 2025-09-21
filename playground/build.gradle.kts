@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    id("it.krzeminski.ko2py.gradle") version "0.0.1-SNAPSHOT"
+//    id("it.krzeminski.ko2py.gradle") version "0.0.1-SNAPSHOT"
 }
 
 repositories {
@@ -8,6 +8,6 @@ repositories {
     mavenLocal()
 }
 
-ko2py {
-    outputDir = file("python")
-}
+//ko2py {
+//    outputDir = file("python")
+//}
