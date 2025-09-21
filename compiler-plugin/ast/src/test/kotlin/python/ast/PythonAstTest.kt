@@ -1,7 +1,7 @@
 package python.ast
 
 import examplePythonCodeAst
-import generated.Python.*
+import model.python.*
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import topython.toPython

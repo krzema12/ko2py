@@ -1,8 +1,8 @@
 package topython
 
-import generated.Python.*
-import generated.Python.List
-import generated.Python.Set
+import model.python.*
+import model.python.List
+import model.python.Set
 
 fun expr.toPython(): String {
     return when (this) {

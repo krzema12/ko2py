@@ -8,7 +8,7 @@ data class SourceFile(
 )
 
 fun SourceFile.writeToFile(directory: Path) {
-    val targetFile = directory.resolve(name).toFile()
+    val targetFile = directory.resolve(name.lowercase()).toFile()
     targetFile.parentFile.mkdirs()
     targetFile.writeText(content)
 }

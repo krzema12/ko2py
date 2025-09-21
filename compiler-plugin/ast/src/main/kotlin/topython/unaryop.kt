@@ -1,6 +1,6 @@
 package topython
 
-import generated.Python.*
+import model.python.*
 
 fun unaryop.toPython(): String = when (this) {
     Invert -> "~"

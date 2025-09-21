@@ -2,8 +2,8 @@
 
 package topython
 
-import generated.Python.alias
-import generated.Python.aliasImpl
+import model.python.alias
+import model.python.aliasImpl
 
 fun alias.toPython() =
     when (this) {

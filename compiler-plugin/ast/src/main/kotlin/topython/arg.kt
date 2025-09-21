@@ -1,7 +1,7 @@
 package topython
 
-import generated.Python.arg
-import generated.Python.argImpl
+import model.python.arg
+import model.python.argImpl
 
 fun arg.toPython(): String {
     return when (this) {

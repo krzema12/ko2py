@@ -25,7 +25,7 @@ fun getBuiltInTypesFile(moduleName: String): SourceFile {
 private fun AsdlTypeDefinition.toKotlinSourceFile(moduleName: String): SourceFile {
     val fileName = "$moduleName/$name.kt"
     val content = """
-        package generated.$moduleName
+        package model.${moduleName.lowercase()}
 
         $thisFileIsGeneratedComment
 
