@@ -1,9 +1,18 @@
 package python.ast
 
 import examplePythonCodeAst
-import model.python.*
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import model.python.builtins.constant
+import model.python.builtins.identifier
+import model.python.cmpop.Lt
+import model.python.cmpop.LtE
+import model.python.expr.Compare
+import model.python.expr.Constant
+import model.python.expr.Name
+import model.python.expr_context.Load
+import model.python.stmt.Expr
+import model.python.stmt.If
 import topython.toPython
 
 class PythonAstTest : FunSpec({

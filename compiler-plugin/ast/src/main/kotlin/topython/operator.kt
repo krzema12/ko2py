@@ -1,6 +1,7 @@
 package topython
 
-import model.python.*
+import model.python.operator.*
+
 
 fun operator.toPython(): String = when (this) {
     Add -> "+"

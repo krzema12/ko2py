@@ -1,7 +1,8 @@
 package topython
 
-import model.python.arguments
-import model.python.argumentsImpl
+import model.python.arguments.arguments
+import model.python.arguments.argumentsImpl
+
 
 fun arguments.toPython(): String {
     return when (this) {

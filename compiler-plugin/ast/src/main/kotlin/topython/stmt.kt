@@ -1,6 +1,6 @@
 package topython
 
-import model.python.*
+import model.python.stmt.*
 
 fun stmt.toPython(): String {
     return when (this) {

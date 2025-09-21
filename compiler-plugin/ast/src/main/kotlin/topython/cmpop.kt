@@ -1,6 +1,7 @@
 package topython
 
-import model.python.*
+import model.python.cmpop.*
+
 
 fun cmpop.toPython(): String = when (this) {
     Eq -> "=="

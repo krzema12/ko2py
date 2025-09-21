@@ -1,6 +1,11 @@
 package topython
 
-import model.python.*
+import model.python.mod.Expression
+import model.python.mod.FunctionType
+import model.python.mod.Interactive
+import model.python.mod.Module
+import model.python.mod.mod
+
 
 fun mod.toPython(): String {
     return when (this) {

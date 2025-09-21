@@ -1,16 +1,16 @@
-import model.python.Assign
-import model.python.Call
-import model.python.Constant
-import model.python.Expr
-import model.python.For
-import model.python.List
-import model.python.Load
-import model.python.Module
-import model.python.Name
-import model.python.Store
-import model.python.constant
-import model.python.identifier
-import model.python.mod
+import model.python.builtins.constant
+import model.python.builtins.identifier
+import model.python.expr.Call
+import model.python.expr.Constant
+import model.python.expr.List
+import model.python.expr.Name
+import model.python.expr_context.Load
+import model.python.expr_context.Store
+import model.python.mod.mod
+import model.python.stmt.Assign
+import model.python.stmt.Expr
+import model.python.stmt.For
+import model.python.mod.Module
 
 val examplePythonCodeAst: mod = Module(
     body = listOf(
