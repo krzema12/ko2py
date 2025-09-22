@@ -21,10 +21,15 @@ import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.expressions.IrBody
+import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.types.isInt
 import org.jetbrains.kotlin.ir.types.isString
+import org.jetbrains.kotlin.ir.util.statements
+import org.jetbrains.kotlin.ir.util.target
 import org.jetbrains.kotlin.ir.visitors.IrVisitor
+import kotlin.math.exp
 
 class Visitor : IrVisitor<List<stmt>, Unit>() {
     override fun visitElement(element: IrElement, data: Unit): List<stmt> {
@@ -102,11 +107,32 @@ class Visitor : IrVisitor<List<stmt>, Unit>() {
             FunctionDef(
                 name = identifier(declaration.name.identifier),
                 args = args,
-                body = emptyList(),
+                body = declaration.body?.let { visitBody(it, data) } ?: emptyList(),
                 decorator_list = emptyList(),
                 returns = null,
                 type_comment = null
             )
+        )
+    }
+
+    override fun visitBody(body: IrBody, data: Unit): List<stmt> {
+        return body.statements.flatMap {
+            when (it) {
+                is IrCall -> visitCall(it, data)
+                else -> TODO("Not implemented! visitBody, statement: $it")
+            }
+        }
+    }
+
+    override fun visitCall(expression: IrCall, data: Unit): List<stmt> {
+        return listOf(
+            Expr(Call(
+                func = Name(id = identifier(expression.target.name.identifier), ctx = Load),
+                args = expression.arguments.map {
+                    Name(id = identifier("TODO_argValue"), ctx = Load)
+                },
+                keywords = emptyList(),
+            ))
         )
     }
 }
