@@ -2,6 +2,6 @@ fun myFirstFunction() {
     println("Hello world!")
 }
 
-fun anotherFunction() {
+fun functionWithArguments(arg1: String, arg2: Int) {
     println("This is another function")
 }

@@ -10,4 +10,4 @@ fun arg.toPython(): String {
 }
 
 fun argImpl.toPython() =
-    arg.name
+    arg.name + type_comment?.let { ": ${it.value}" }.orEmpty()

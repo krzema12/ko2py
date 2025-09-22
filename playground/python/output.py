@@ -1,5 +1,5 @@
 def myFirstFunction():
     pass
 
-def anotherFunction():
+def functionWithArguments(arg1: str, arg2: int):
     pass

@@ -1,7 +1,9 @@
 package it.krzeminski.ko2py.compiler
 
+import model.python.arg.argImpl
 import model.python.arguments.argumentsImpl
 import model.python.builtins.identifier
+import model.python.builtins.string
 import model.python.stmt.FunctionDef
 import model.python.stmt.stmt
 import org.jetbrains.kotlin.ir.IrElement
@@ -9,6 +11,8 @@ import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
+import org.jetbrains.kotlin.ir.types.isInt
+import org.jetbrains.kotlin.ir.types.isString
 import org.jetbrains.kotlin.ir.visitors.IrVisitor
 
 class Visitor : IrVisitor<List<stmt>, Unit>() {
@@ -36,18 +40,29 @@ class Visitor : IrVisitor<List<stmt>, Unit>() {
     }
 
     override fun visitFunction(declaration: IrFunction, data: Unit): List<stmt> {
+        val args = argumentsImpl(
+            args = declaration.parameters.map { param ->
+                argImpl(
+                    arg = identifier(param.name.asString()),
+                    type_comment = when {
+                        param.type.isString() -> string("str")
+                        param.type.isInt() -> string("int")
+                        else -> string("unknown type ${param.type}")
+                    },
+                    annotation = null,
+                )
+            },
+            posonlyargs = emptyList(),
+            vararg = null,
+            kwonlyargs = emptyList(),
+            kw_defaults = emptyList(),
+            kwarg = null,
+            defaults = emptyList(),
+        )
         return listOf(
             FunctionDef(
                 name = identifier(declaration.name.identifier),
-                args = argumentsImpl(
-                    args = emptyList(),
-                    vararg = null,
-                    kwonlyargs = emptyList(),
-                    posonlyargs = emptyList(),
-                    kw_defaults = emptyList(),
-                    kwarg = null,
-                    defaults = emptyList()
-                ),
+                args = args,
                 body = emptyList(),
                 decorator_list = emptyList(),
                 returns = null,
