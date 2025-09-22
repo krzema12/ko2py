@@ -1,10 +1,21 @@
+@file:OptIn(UnsafeDuringIrConstructionAPI::class)
+
 package it.krzeminski.ko2py.compiler
 
 import model.python.arg.argImpl
 import model.python.arguments.argumentsImpl
 import model.python.builtins.identifier
+import model.python.builtins.constant
 import model.python.builtins.string
+import model.python.cmpop.Eq
+import model.python.expr.Call
+import model.python.expr.Compare
+import model.python.expr.Constant
+import model.python.expr.Name
+import model.python.expr_context.Load
+import model.python.stmt.Expr
 import model.python.stmt.FunctionDef
+import model.python.stmt.If
 import model.python.stmt.stmt
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.declarations.IrFile
@@ -29,14 +40,42 @@ class Visitor : IrVisitor<List<stmt>, Unit>() {
         }
     }
 
-    @OptIn(UnsafeDuringIrConstructionAPI::class)
     override fun visitFile(declaration: IrFile, data: Unit): List<stmt> {
         return declaration.declarations.flatMap {
             when (it) {
                 is IrFunction -> visitFunction(it, data)
                 else -> TODO("Not implemented! visitFile")
             }
+        } + if (hasMainFunction(declaration)) {
+            generateCallToMain()
+        } else {
+            emptyList()
         }
+    }
+
+    private fun hasMainFunction(declaration: IrFile): Boolean
+        = declaration.declarations.any { it is IrFunction && it.name.identifier == "main" }
+
+    private fun generateCallToMain(): List<stmt> {
+        return listOf(
+            If(
+                test = Compare(
+                    left = Name(id = identifier("__name__"), ctx = Load),
+                    ops = listOf(Eq),
+                    comparators = listOf(Constant(value = constant("\"__main__\""), kind = null)),
+                ),
+                body = listOf(
+                    Expr(
+                        Call(
+                            func = Name(id = identifier("main"), ctx = Load),
+                            args = emptyList(),
+                            keywords = emptyList(),
+                        )
+                    ),
+                ),
+                orelse = emptyList(),
+            ),
+        )
     }
 
     override fun visitFunction(declaration: IrFunction, data: Unit): List<stmt> {
