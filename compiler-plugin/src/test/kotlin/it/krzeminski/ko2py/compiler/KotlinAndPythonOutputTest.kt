@@ -1,9 +1,10 @@
 package it.krzeminski.ko2py.compiler
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.shouldBe
 
-class KotlinToPythonTest : FunSpec({
+class KotlinAndPythonOutputTest : FunSpec({
     test("smoke test") {
         // language=kotlin
         val input = """
@@ -13,14 +14,10 @@ class KotlinToPythonTest : FunSpec({
         """.trimIndent()
 
         val actualOutput = compileToPython(input)
+        val pythonCode = tempfile()
+        pythonCode.writeText(actualOutput)
+        val stdoutFromPython = runCommand("python3", pythonCode.absolutePath)
 
-        actualOutput shouldBe """
-            def main():
-                print("Hello, world!")
-
-            if __name__ == "__main__":
-                main()
-
-        """.trimIndent()
+        stdoutFromPython shouldBe "Hello, world!\n"
     }
 })
