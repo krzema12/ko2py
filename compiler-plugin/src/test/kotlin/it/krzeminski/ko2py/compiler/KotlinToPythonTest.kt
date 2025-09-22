@@ -12,7 +12,7 @@ class KotlinToPythonTest : FunSpec({
             }
         """.trimIndent()
 
-        val actualOutput = compileToPython(input)
+        val actualOutput = compileToPython(input).getPythonOutput()
 
         actualOutput shouldBe """
             def main():

@@ -6,8 +6,8 @@ import com.tschuchort.compiletesting.SourceFile
 import java.io.File
 import kotlin.collections.plus
 
-fun compileToPython(input: String): String {
-    val result = KotlinCompilation().apply {
+fun compileToPython(input: String): JvmCompilationResult {
+    return KotlinCompilation().apply {
         sources = listOf(SourceFile.kotlin("main.kt", input))
         compilerPluginRegistrars = listOf(Registrar())
         commandLineProcessors = listOf(ArgsProcessor())
@@ -18,8 +18,10 @@ fun compileToPython(input: String): String {
             "-P", "plugin:com.tschuchort.compiletesting.maincommandlineprocessor:ko2py:outputDir=build",
         )
     }.compile()
-    return result.findGeneratedOutputDir().resolve("output.py").readText()
 }
+
+fun JvmCompilationResult.getPythonOutput() =
+   this.findGeneratedOutputDir().resolve("output.py").readText()
 
 private fun JvmCompilationResult.findGeneratedOutputDir(): File {
     val pattern = "Generated Python code saved to (.+)".toRegex()

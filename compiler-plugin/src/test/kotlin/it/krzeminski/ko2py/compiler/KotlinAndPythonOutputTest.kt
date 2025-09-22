@@ -13,11 +13,13 @@ class KotlinAndPythonOutputTest : FunSpec({
             }
         """.trimIndent()
 
-        val actualOutput = compileToPython(input)
+        val actualOutput = compileToPython(input).getPythonOutput()
         val pythonCode = tempfile()
         pythonCode.writeText(actualOutput)
         val stdoutFromPython = runCommand("python3", pythonCode.absolutePath)
 
-        stdoutFromPython shouldBe "Hello, world!\n"
+        val expectedStdout = "Hello, world!\n"
+
+        stdoutFromPython shouldBe expectedStdout
     }
 })
