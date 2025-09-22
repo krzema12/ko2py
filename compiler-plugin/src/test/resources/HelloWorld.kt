@@ -3,5 +3,5 @@ fun main() {
 }
 
 // Output:
-// Hello world!
+// Hello, world!
 //
