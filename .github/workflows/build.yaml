@@ -22,19 +22,8 @@ jobs:
     - id: 'step-2'
       name: 'Consistency check'
       run: 'git diff --exit-code ''.github/workflows/build.yaml'''
-  build-on-UbuntuLatest:
+  build:
     runs-on: 'ubuntu-latest'
-    needs:
-    - 'check_yaml_consistency'
-    steps:
-    - id: 'step-0'
-      uses: 'actions/checkout@v4'
-    - id: 'step-1'
-      uses: 'gradle/actions/setup-gradle@v4'
-    - id: 'step-2'
-      run: './gradlew build'
-  build-on-MacOSLatest:
-    runs-on: 'macos-latest'
     needs:
     - 'check_yaml_consistency'
     steps:
