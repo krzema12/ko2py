@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.shouldBe
 
-class KotlinAndPythonOutputTest : FunSpec({
+class JvmAndPythonOutputTest : FunSpec({
     test("smoke test") {
         // language=kotlin
         val input = """
