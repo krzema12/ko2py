@@ -26,6 +26,10 @@ kotlin {
     }
 }
 
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
