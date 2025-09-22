@@ -23,9 +23,12 @@ import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
+import org.jetbrains.kotlin.ir.expressions.IrConst
+import org.jetbrains.kotlin.ir.expressions.IrConstKind
 import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.types.isInt
 import org.jetbrains.kotlin.ir.types.isString
+import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.ir.util.statements
 import org.jetbrains.kotlin.ir.util.target
 import org.jetbrains.kotlin.ir.visitors.IrVisitor
@@ -125,11 +128,31 @@ class Visitor : IrVisitor<List<stmt>, Unit>() {
     }
 
     override fun visitCall(expression: IrCall, data: Unit): List<stmt> {
+        val funName = expression.target.name.asString().let {
+            if (it == "println" && expression.target.parent.kotlinFqName.asString() == "kotlin.io") {
+                // Until we have the full Kotlin stdlib compiled to Python, let's just
+                // proxy to Python's 'print' function.
+                "print"
+            } else {
+                it
+            }
+        }
         return listOf(
             Expr(Call(
-                func = Name(id = identifier(expression.target.name.identifier), ctx = Load),
+                func = Name(id = identifier(funName), ctx = Load),
                 args = expression.arguments.map {
-                    Name(id = identifier("TODO_argValue"), ctx = Load)
+                    Name(id = identifier(
+                        when (it) {
+                            is IrConst -> {
+                                when (it.kind) {
+                                    IrConstKind.String -> "\"${it.value}\""
+                                    IrConstKind.Int -> it.value.toString()
+                                    else -> "TODO_argValue"
+                                }
+                            }
+                            else -> "TODO_argValue"
+                        }
+                    ), ctx = Load)
                 },
                 keywords = emptyList(),
             ))
