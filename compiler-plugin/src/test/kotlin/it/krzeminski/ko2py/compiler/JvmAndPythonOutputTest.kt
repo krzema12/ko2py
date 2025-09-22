@@ -5,13 +5,9 @@ import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.shouldBe
 
 class JvmAndPythonOutputTest : FunSpec({
+    // TODO: iterate over all Kotlin files in resources
     test("smoke test") {
-        // language=kotlin
-        val input = """
-            fun main() {
-                println("Hello, world!")
-            }
-        """.trimIndent()
+        val input = KotlinToPythonTest::class.java.getResource("/HelloWorld.kt").readText()
 
         val compilationResult = compileToPython(input)
         val jvmClassFile = compilationResult.generatedFiles
@@ -23,7 +19,9 @@ class JvmAndPythonOutputTest : FunSpec({
         val stdoutFromJvm = runCommand("java", "-cp", jvmClassFile.absolutePath, "MainKt")
         val stdoutFromPython = runCommand("python3", pythonCode.absolutePath)
 
-        val expectedStdout = "Hello, world!\n"
+        val expectedStdout = input
+            .substringAfter("// Output:\n")
+            .lines().joinToString(separator = "\n") { it.removePrefix("//").trimStart() }
 
         stdoutFromPython shouldBe expectedStdout
         stdoutFromJvm shouldBe expectedStdout
