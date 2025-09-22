@@ -8,6 +8,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":compiler-plugin:ast"))
     compileOnly(kotlin("compiler"))
 }
 

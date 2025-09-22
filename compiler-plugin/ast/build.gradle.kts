@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
     id("io.kotest")
+    id("maven-publish")
 }
 
 dependencies {
@@ -11,4 +12,12 @@ dependencies {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
 }

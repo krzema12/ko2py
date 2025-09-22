@@ -3,14 +3,18 @@ package it.krzeminski.ko2py.compiler
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import topython.toPython
 import java.io.File
 
 class Extension(private val outputDir: File) : IrGenerationExtension {
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
+        val visitor = Visitor()
+        val ast = moduleFragment.accept(visitor, Unit)
+        val generatedPython = ast.toPython()
         // Fake implementation, replace it with the real thing:
-        outputDir.resolve("dummy-output.txt").also {
+        outputDir.resolve("output.py").also {
             it.parentFile.mkdirs()
-            it.writeText("Hello from my first Kotlin compiler plugin!")
+            it.writeText(generatedPython)
         }
     }
 }
