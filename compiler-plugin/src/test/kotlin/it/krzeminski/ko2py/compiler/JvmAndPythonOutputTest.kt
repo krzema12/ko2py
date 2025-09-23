@@ -1,5 +1,6 @@
 package it.krzeminski.ko2py.compiler
 
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.shouldBe
@@ -31,8 +32,10 @@ class JvmAndPythonOutputTest : FunSpec({
                     .substringAfter("// Output:\n")
                     .lines().joinToString(separator = "\n") { it.removePrefix("//").trimStart() }
 
-                stdoutFromPython shouldBe expectedStdout
-                stdoutFromJvm shouldBe expectedStdout
+                withClue("Output mismatch! Python code:\n$pythonCodeString") {
+                    stdoutFromPython shouldBe expectedStdout
+                    stdoutFromJvm shouldBe expectedStdout
+                }
             }
         }
 })

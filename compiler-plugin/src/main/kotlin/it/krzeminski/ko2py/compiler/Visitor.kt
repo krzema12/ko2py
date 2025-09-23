@@ -12,7 +12,10 @@ import model.python.expr.Call
 import model.python.expr.Compare
 import model.python.expr.Constant
 import model.python.expr.Name
+import model.python.expr.expr
 import model.python.expr_context.Load
+import model.python.expr_context.Store
+import model.python.stmt.Assign
 import model.python.stmt.Expr
 import model.python.stmt.FunctionDef
 import model.python.stmt.If
@@ -21,10 +24,9 @@ import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.declarations.IrVariable
 import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
-import org.jetbrains.kotlin.ir.expressions.IrConst
-import org.jetbrains.kotlin.ir.expressions.IrConstKind
 import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.types.isInt
 import org.jetbrains.kotlin.ir.types.isString
@@ -122,6 +124,7 @@ class Visitor : IrVisitor<List<stmt>, Unit>() {
         return body.statements.flatMap {
             when (it) {
                 is IrCall -> visitCall(it, data)
+                is IrVariable -> visitVariable(it, data)
                 else -> TODO("Not implemented! visitBody, statement: $it")
             }
         }
@@ -140,22 +143,28 @@ class Visitor : IrVisitor<List<stmt>, Unit>() {
         return listOf(
             Expr(Call(
                 func = Name(id = identifier(funName), ctx = Load),
-                args = expression.arguments.map {
-                    Name(id = identifier(
-                        when (it) {
-                            is IrConst -> {
-                                when (it.kind) {
-                                    IrConstKind.String -> "\"${it.value}\""
-                                    IrConstKind.Int -> it.value.toString()
-                                    else -> "TODO_argValue"
-                                }
-                            }
-                            else -> "TODO_argValue"
-                        }
-                    ), ctx = Load)
+                args = expression.arguments.filterNotNull().map {
+                    it.toPythonExpr()
                 },
                 keywords = emptyList(),
             ))
         )
+    }
+
+    override fun visitVariable(declaration: IrVariable, data: Unit): List<stmt> {
+        return declaration.initializer?.let { initializer ->
+            listOf(
+            Assign(
+                targets = listOf(
+                    Name(
+                        id = identifier(declaration.name.identifier),
+                        ctx = Store,
+                    )
+                ),
+                value = initializer.toPythonExpr(),
+                type_comment = null,
+            )
+            )
+        } ?: emptyList()
     }
 }
